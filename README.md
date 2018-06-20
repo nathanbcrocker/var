@@ -1,2 +1,2 @@
 # Value at Risk Calculation Engine #
-An example of using Akka, running in Spring boot to calculate Value at Risk for stocks.
+An Akka based project to calculate lognormal Value at Risk for stocks.
