@@ -32,20 +32,27 @@ public class StockManager extends AbstractLoggingActor {
     }
 
     public static class ResetRequest {
-        public ResetRequest() {}
+        public ResetRequest(final String ticker) { this.ticker = ticker; }
+        final String ticker;
     }
 
     public static Props props(String ticker) {
         return Props.create(StockManager.class, ticker);
     }
 
-    private void onResetRequest(ResetRequest resetRequest) {
+    private void onResetRequest(ResetRequest request) {
+        if (!request.ticker.equalsIgnoreCase(this.ticker)) {
+            log().warning("Ignoring request for " + request.ticker + " as this actor is not responsible for that ticker");
+            return;
+        }
+
         this.stockOptional = Optional.empty();
     }
 
     private void onQuery(StockQuery query) {
         if (!query.ticker.equalsIgnoreCase(this.ticker)) {
             log().warning("Ignoring request for " + query.ticker + " as this actor is not responsible for that ticker");
+            return;
         }
 
         final Stock stock = stockOptional.orElseGet(() -> {
